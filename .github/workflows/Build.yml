@@ -82,7 +82,7 @@ jobs:
       run: |
         gh release create v${{ github.run_number }} \
         amneziawg-android-signed.apk \
-        --title "AmneziaWG Android v${{ github.run_number }} \
+        --title "AmneziaWG Android v${{ github.run_number }}" \
         --notes "## 📱 Подписанная версия AmneziaWG Android
 
         **ВАЖНО**: Этот APK подписан временным ключом для тестирования.
@@ -92,4 +92,4 @@ jobs:
         2. Удалить предыдущую версию приложения
         3. Установить этот APK"
           env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
