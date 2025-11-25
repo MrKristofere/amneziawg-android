@@ -8,8 +8,6 @@ on:
 
 permissions:
   contents: write
-  actions: write
-  packages: write
 
 jobs:
   build-and-release:
@@ -80,7 +78,15 @@ jobs:
         mv "$APK_PATH" "amneziawg-android-signed.apk"
         echo "📦 APK подготовлен: amneziawg-android-signed.apk"
 
+    - name: Upload APK as artifact
+      uses: actions/upload-artifact@v5
+      with:
+        name: amneziawg-android-signed
+        path: amneziawg-android-signed.apk
+        retention-days: 30
+
     - name: Get version from tag
+      if: startsWith(github.ref, 'refs/tags/')
       id: get_version
       run: |
         if [[ ${{ github.ref }} == refs/tags/* ]]; then
@@ -90,18 +96,18 @@ jobs:
           echo "TAG=v${{ github.run_number }}" >> $GITHUB_ENV
         fi
 
-    - name: Create Release
-      run: |
-        gh release create ${{ env.TAG }} \
-        amneziawg-android-signed.apk \
-        --title "AmneziaWG Android ${{ env.TAG }}" \
-        --notes "## 📱 Подписанная версия AmneziaWG Android
-
-        **ВАЖНО**: Этот APK подписан временным ключом для тестирования.
-
-        Для установки необходимо:
-        1. Разрешить установку из неизвестных источников
-        2. Удалить предыдущую версию приложения
-        3. Установить этот APK"
-      env:
-        GH_TOKEN: ${{ github.token }}
+    - name: Create Release (only on tags)
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "amneziawg-android-signed.apk"
+        tag: "${{ env.TAG }}"
+        name: "AmneziaWG Android ${{ env.TAG }}"
+        body: |
+          ## 📱 Подписанная версия AmneziaWG Android
+          **ВАЖНО**: Этот APK подписан временным ключом для тестирования.
+        draft: false
+        prerelease: false
+        allowUpdates: true
+        replacesArtifacts: true
+        token: ${{ secrets.GITHUB_TOKEN }}
