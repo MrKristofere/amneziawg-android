@@ -79,7 +79,7 @@ jobs:
         echo "📦 APK подготовлен: amneziawg-android-signed.apk"
 
     - name: Create GitHub Release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v2.4.1
       with:
         files: amneziawg-android-signed.apk
         tag_name: v${{ github.run_number }}
