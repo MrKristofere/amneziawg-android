@@ -92,4 +92,4 @@ jobs:
         2. Удалить предыдущую версию приложения
         3. Установить этот APK"
           env:
-            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GH_TOKEN: ${{ github.token }}
