@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: write
+  actions: read
+  packages: read
 
 jobs:
   build-and-release:
