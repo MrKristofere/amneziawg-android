@@ -78,12 +78,22 @@ jobs:
         mv "$APK_PATH" "amneziawg-android-signed.apk"
         echo "📦 APK подготовлен: amneziawg-android-signed.apk"
 
+    - name: Get version from tag
+      id: get_version
+      run: |
+        if [[ ${{ github.ref }} == refs/tags/* ]]; then
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "TAG=$TAG_NAME" >> $GITHUB_ENV
+        else
+          echo "TAG=v${{ github.run_number }}" >> $GITHUB_ENV
+        fi
+
     - name: Create Release
       uses: ncipollo/release-action@v1
       with:
         artifacts: "amneziawg-android-signed.apk"
-        tag: "v${{ github.run_number }}"
-        name: "AmneziaWG Android v${{ github.run_number }}"
+        tag: "${{ env.TAG }}"
+        name: "AmneziaWG Android ${{ env.TAG }}"
         body: |
           ## 📱 Подписанная версия AmneziaWG Android
       
@@ -95,7 +105,7 @@ jobs:
           3. Установить этот APK
         draft: false
         prerelease: false
-        overwrite: true
+        allowUpdates: true
         replacesArtifacts: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
