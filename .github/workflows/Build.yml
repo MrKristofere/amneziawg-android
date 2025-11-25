@@ -79,17 +79,23 @@ jobs:
         echo "📦 APK подготовлен: amneziawg-android-signed.apk"
 
     - name: Create Release
-      run: |
-        gh release create v${{ github.run_number }} \
-        amneziawg-android-signed.apk \
-        --title "AmneziaWG Android v${{ github.run_number }}" \
-        --notes "## 📱 Подписанная версия AmneziaWG Android
-
-        **ВАЖНО**: Этот APK подписан временным ключом для тестирования.
-
-        Для установки необходимо:
-        1. Разрешить установку из неизвестных источников
-        2. Удалить предыдущую версию приложения
-        3. Установить этот APK"
-          env:
-            GH_TOKEN: ${{ github.token }}
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "amneziawg-android-signed.apk"
+        tag: "v${{ github.run_number }}"
+        name: "AmneziaWG Android v${{ github.run_number }}"
+        body: |
+          ## 📱 Подписанная версия AmneziaWG Android
+      
+          **ВАЖНО**: Этот APK подписан временным ключом для тестирования.
+      
+          Для установки необходимо:
+          1. Разрешить установку из неизвестных источников
+          2. Удалить предыдущую версию приложения
+          3. Установить этот APK
+        draft: false
+        prerelease: false
+        overwrite: true
+        replacesArtifacts: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
